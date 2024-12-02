@@ -18,14 +18,14 @@
 #define CONFIG_NTP_TIMEZONE_OFFSET 3600 // TIMEZONE OFFSET IN SECONDS
 */
 
-#define CONFIG_DISPLAY_UPDATE_INTERVAL 60000
+#define CONFIG_DISPLAY_UPDATE_INTERVAL 30000
 #define LANDSCAPE_ORIENTATION 1
 
 TFT_eSPI tft = TFT_eSPI();
 WiFiUDP wifi_udp;
 
 String time_string, date_string;
-String week_days[] = { "Niedziela", "Poniedzialek", "Wtorek", "Sroda", "Czwartek", "Piatek", "Sobota" };
+String week_days[] = { "Niedziela", "Poniedz.", "Wtorek", "Sroda", "Czwartek", "Piatek", "Sobota" };
 int wifi_status[8] = { 
 	TFT_WHITE,       // WL_IDLE_STATUS      = 0,
 	TFT_DARKGREY,    // WL_NO_SSID_AVAIL    = 1,
@@ -132,10 +132,13 @@ void update() {
 	tft.setTextColor(TFT_WHITE);
 	draw_time();
 
+	last_update = millis();
 }
 
 void loop() {
-	unsigned long time_difference = last_update - millis();
+	unsigned long time_difference = millis() - last_update;
 	if (time_difference > CONFIG_DISPLAY_UPDATE_INTERVAL) update();
+
+	delay(CONFIG_DISPLAY_UPDATE_INTERVAL);
 }
 
